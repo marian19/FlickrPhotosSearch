@@ -9,14 +9,14 @@
 import Foundation
 
 
-protocol SearchByKeywordServicePresenterProtocol {
+protocol SearchByKeywordServicePresenterProtocol: class {
     func setSearchResults(photoArray : [Photo])
     func handelError(error : Error)
 
     
 }
 
-protocol SearchByKeywordPresenterServiceProtocol {
+protocol SearchByKeywordPresenterServiceProtocol : class {
     func searchByKeyword(keyword : String, pageNumber : Int)
     init(presenter: SearchByKeywordServicePresenterProtocol)
 

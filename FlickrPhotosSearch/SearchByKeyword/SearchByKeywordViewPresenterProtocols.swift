@@ -8,14 +8,14 @@
 
 import UIKit
 
-protocol SearchByKeywordViewPresenterProtocol {
+protocol SearchByKeywordViewPresenterProtocol : class{
     func searchWithKeyword(keyword : String)
     init(view: SearchByKeywordPresenterViewProtocol)
     func loadMorePhotos()
 
 }
 
-protocol SearchByKeywordPresenterViewProtocol {
+protocol SearchByKeywordPresenterViewProtocol : class{
     func showSearchResult(photoArray : [Photo])
     func showErrorMsg(msg : String)
 

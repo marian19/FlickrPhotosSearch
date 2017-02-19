@@ -13,18 +13,18 @@ import SwiftyJSON
 class SearchByKeywordService: SearchByKeywordPresenterServiceProtocol {
     
     var apiClient = HTTPClient.sharedInstance
-    var searchByKeywordPresenter : SearchByKeywordServicePresenterProtocol
+  weak var searchByKeywordPresenter : SearchByKeywordServicePresenterProtocol?
     
     
     func searchByKeyword(keyword : String , pageNumber : Int){
         
-        self.searchPhotosByKeyword(keyword: keyword, pageNumber: pageNumber ,success: {  photoArray in
+        self.searchPhotosByKeyword(keyword: keyword, pageNumber: pageNumber ,success: { [weak self] photoArray in
             
-            self.searchByKeywordPresenter.setSearchResults(photoArray: photoArray)
+            self?.searchByKeywordPresenter?.setSearchResults(photoArray: photoArray)
             
             },failure: { [weak self] response , error in
                 
-                self?.searchByKeywordPresenter.handelError(error: error)
+                self?.searchByKeywordPresenter?.handelError(error: error)
                 
         })
     }

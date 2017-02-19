@@ -9,8 +9,9 @@
 import UIKit
 
 class SearchByKeywordPresenter: SearchByKeywordViewPresenterProtocol, SearchByKeywordServicePresenterProtocol{
-
-    var SearchByKeywordView : SearchByKeywordPresenterViewProtocol
+    
+    weak var SearchByKeywordView : SearchByKeywordPresenterViewProtocol?
+    var service : SearchByKeywordPresenterServiceProtocol?
     
     var pageIndex = 1
     var keyword : String?
@@ -22,25 +23,27 @@ class SearchByKeywordPresenter: SearchByKeywordViewPresenterProtocol, SearchByKe
     
     func searchWithKeyword(keyword : String){
         self.keyword = keyword
-    let service = SearchByKeywordService(presenter: self)
-        
-        service.searchByKeyword(keyword: keyword, pageNumber: pageIndex)
+        service = SearchByKeywordService(presenter: self)
+        service?.searchByKeyword(keyword: keyword, pageNumber: pageIndex)
         pageIndex = pageIndex + 1
     }
     
     func loadMorePhotos(){
-        let service = SearchByKeywordService(presenter: self)
-        service.searchByKeyword(keyword: keyword!, pageNumber: pageIndex)
+        if service == nil {
+            service = SearchByKeywordService(presenter: self)
+            
+        }
+        service?.searchByKeyword(keyword: keyword!, pageNumber: pageIndex)
         pageIndex = pageIndex + 1
     }
-
+    
     func setSearchResults(photoArray : [Photo]){
-    SearchByKeywordView.showSearchResult(photoArray: photoArray)
+        SearchByKeywordView?.showSearchResult(photoArray: photoArray)
         
     }
     
     func handelError(error : Error){
-    
+        
     }
-
+    
 }

@@ -39,7 +39,7 @@ class SearchByKeywordViewController: BaseViewController ,UISearchBarDelegate ,Se
         tableview.reloadData()
         if presenter != nil {
             progressView = self.showGlobalProgressHUDWithTitle(view: self.view, title: nil)
-
+            
             presenter?.searchWithKeyword(keyword: searchBar.text!)
             
         }
@@ -57,20 +57,21 @@ class SearchByKeywordViewController: BaseViewController ,UISearchBarDelegate ,Se
      */
     
     func showSearchResult(photoArray : [Photo]){
-        progressView?.hide(animated: true)
-        photos.append(contentsOf: photoArray)
-        tableview.reloadData()
+        DispatchQueue.main.async  {
+            self.progressView?.hide(animated: true)
+            self.photos.append(contentsOf: photoArray)
+            self.tableview.reloadData()
+        }
     }
     
     func showErrorMsg(msg : String){
         self.alert(message: msg)
     }
     
-
-
-//MARK: - UITableView Data Source/Delegate
-
-
+    
+    
+    //MARK: - UITableView Data Source/Delegate
+    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         if photos.count > 0 {
             return self.photos.count
@@ -101,7 +102,7 @@ class SearchByKeywordViewController: BaseViewController ,UISearchBarDelegate ,Se
     func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
         return 0.01
     }
-
+    
 }
 
 //MARK: - DZNEmptyDataSet Source/Delegate
