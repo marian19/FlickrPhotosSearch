@@ -17,11 +17,12 @@ class SearchByKeywordPresenter: SearchByKeywordViewPresenterProtocol, SearchByKe
     var keyword : String?
     required init(view: SearchByKeywordPresenterViewProtocol) {
         self.SearchByKeywordView = view
-        Photo.deleteAllPhotos()
         
     }
     
     func searchWithKeyword(keyword : String){
+        Photo.deleteAllPhotos()
+        
         self.keyword = keyword
         service = SearchByKeywordService(presenter: self)
         service?.searchByKeyword(keyword: keyword, pageNumber: pageIndex)
@@ -43,7 +44,16 @@ class SearchByKeywordPresenter: SearchByKeywordViewPresenterProtocol, SearchByKe
     }
     
     func handelError(error : Error){
-        
+        SearchByKeywordView?.showErrorMsg(msg: error.localizedDescription)
     }
+    
+    func getOfflinePhotos(){
+        if service == nil {
+            service = SearchByKeywordService(presenter: self)
+            
+        }
+        service?.getOfflinePhotos()
+    }
+    
     
 }

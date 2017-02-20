@@ -10,6 +10,9 @@ import Foundation
 import CoreData
 import UIKit
 import SwiftyJSON
+import Alamofire
+import AlamofireImage
+
 
 @objc(Photo)
 public class Photo: NSManagedObject {
@@ -48,7 +51,7 @@ public class Photo: NSManagedObject {
                                                 in: managedContext!)!
         
         let photo = NSManagedObject(entity: entity,
-                                    insertInto: managedContext)
+                                    insertInto: managedContext) as! Photo
         
         photo.setValue(jsonDictionary["title"].stringValue, forKey: "title")
         photo.setValue(jsonDictionary["farm"].stringValue, forKey: "farm")
@@ -57,14 +60,46 @@ public class Photo: NSManagedObject {
         photo.setValue(jsonDictionary["secret"].stringValue, forKey: "secret")
         photo.setValue(jsonDictionary["server"].stringValue, forKey: "server")
         
-        do {
-            try managedContext?.save()
+        Alamofire.request(photo.getPhotoThumbnailURL()).responseImage { response in
+            debugPrint(response)
             
-        } catch let error as NSError {
-            print("Could not save. \(error), \(error.userInfo)")
+            
+            debugPrint(response.result)
+            
+            if let image = response.result.value {
+                print("image downloaded: \(image)")
+                photo.setValue(UIImagePNGRepresentation(image), forKey: "image")
+                do {
+                    try managedContext?.save()
+                    
+                } catch let error as NSError {
+                    print("Could not save. \(error), \(error.userInfo)")
+                }
+            }
         }
-        return photo as! Photo
+       
+        return photo
     }
     
-    
+    static func getAllPhotos() -> [Photo]{
+        
+        var photos  = [Photo]() // Where Locations = your NSManaged Class
+        let appDelegate = UIApplication.shared.delegate as? AppDelegate
+        
+        let managedContext = appDelegate?.persistentContainer.viewContext
+        
+        let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "Photo")
+        do {
+            
+            try
+                photos = managedContext!.fetch(fetchRequest) as! [Photo]
+        } catch {
+            // Replace this implementation with code to handle the error appropriately.
+            // fatalError() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
+            let nserror = error as NSError
+            fatalError("Unresolved error \(nserror), \(nserror.userInfo)")
+        }
+       
+        return photos
+    }
 }

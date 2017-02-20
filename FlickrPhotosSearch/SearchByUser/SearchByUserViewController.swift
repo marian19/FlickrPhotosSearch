@@ -7,29 +7,87 @@
 //
 
 import UIKit
+import SDWebImage
+import MBProgressHUD
+import DZNEmptyDataSet
 
-class SearchByUserViewController: BaseViewController {
 
+class SearchByUserViewController: BaseViewController ,SearchByUserPresenterViewProtocol,UITableViewDelegate ,UITableViewDataSource{
+    
+    @IBOutlet weak var tableView: UITableView!
+    
+    var presenter : SearchByUserViewPresenterProtocol?
+    var photos : [Photo] = []
+    var progressView : MBProgressHUD?
+    var ownerID : String?
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        presenter  = SearchByUserPresenter(view: self)
+        if presenter != nil {
+            progressView = self.showGlobalProgressHUDWithTitle(view: self.view, title: nil)
+            presenter?.searchWithUser(ownerID: ownerID!)
+            
+        }
         // Do any additional setup after loading the view.
     }
-
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
+    
+    //MARK: SearchByKeywordPresenterViewProtocol
+    
+    func showSearchResult(photoArray : [Photo]){
+        DispatchQueue.main.async  {
+            self.progressView!.hide(animated: false)
+            self.photos.append(contentsOf: photoArray)
+            self.tableView.reloadData()
+        }
     }
     
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
+    func showErrorMsg(msg : String){
+        self.alert(message: msg)
     }
-    */
-
+    
+    
+    //MARK: - UITableView Data Source/Delegate
+    
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return self.photos.count
+        
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell{
+        
+        let photo = photos[indexPath.row]
+        
+        let cell = tableView.dequeueReusableCell(withIdentifier: "reuseIdentifier", for: indexPath) as! PhotoTableViewCell
+        
+        cell.titleLabel.text = photo.title
+        cell.photoImageView.sd_setShowActivityIndicatorView(true)
+        cell.photoImageView.sd_setIndicatorStyle(.gray)
+        cell.photoImageView.sd_setImage(with: URL(string: photo.getPhotoThumbnailURL()))
+        
+        if indexPath.row == photos.count - 1 { // last cell
+            progressView = self.showGlobalProgressHUDWithTitle(view: self.view, title: nil)
+            presenter?.loadMorePhotos()
+        }
+        
+        return cell
+    }
+    
+    func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
+        return 0.01
+    }
+    
 }
+
+//MARK: - DZNEmptyDataSet Source/Delegate
+
+extension SearchByUserViewController: DZNEmptyDataSetSource, DZNEmptyDataSetDelegate{
+    
+    func title(forEmptyDataSet scrollView: UIScrollView!) -> NSAttributedString! {
+        return NSAttributedString(string: "There is no photos")
+    }
+    
+    func description(forEmptyDataSet scrollView: UIScrollView!) -> NSAttributedString! {
+        return NSAttributedString(string: "")
+    }
+}
+

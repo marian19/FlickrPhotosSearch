@@ -18,7 +18,7 @@ class HTTPClient: NSObject {
         
     }
     
-    func executeGetRequest(url:String,parameters: Parameters?,success:@escaping (Any) -> Void, failure:@escaping (HTTPURLResponse ,Error) -> Void){
+    func executeGetRequest(url:String,parameters: Parameters?,success:@escaping (Any) -> Void, failure:@escaping ( Error) -> Void){
         Alamofire.request(url, parameters: parameters).responseJSON { (response:DataResponse<Any>) in
             
             
@@ -33,8 +33,7 @@ class HTTPClient: NSObject {
                 
             case .failure(_):
                 print(response.result.error!)
-                print (response.response?.description ?? "default value")
-                failure(response.response!,response.result.error!)
+                failure(response.result.error!)
                 
                 break
                 

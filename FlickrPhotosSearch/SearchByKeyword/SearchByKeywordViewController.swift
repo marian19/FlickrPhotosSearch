@@ -14,53 +14,62 @@ import DZNEmptyDataSet
 class SearchByKeywordViewController: BaseViewController ,UISearchBarDelegate ,SearchByKeywordPresenterViewProtocol,UITableViewDelegate ,UITableViewDataSource {
     
     @IBOutlet weak var searchBar: UISearchBar!
-    @IBOutlet weak var tableview: UITableView!
+    @IBOutlet weak var tableView: UITableView!
     
     var presenter : SearchByKeywordViewPresenterProtocol?
     var photos : [Photo] = []
     var progressView : MBProgressHUD?
+    var isNetworkValiable = false
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         presenter  = SearchByKeywordPresenter(view: self)
-        
-        // Do any additional setup after loading the view.
-    }
-    
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
-    }
-    
-    public func searchBarSearchButtonClicked(_ searchBar: UISearchBar){
-        
-        print(searchBar.text ?? "default value")
-        
-        photos = []
-        tableview.reloadData()
-        if presenter != nil {
+        isNetworkValiable = NetworkUtil.getNetworkStatus()
+        if isNetworkValiable == false {
             progressView = self.showGlobalProgressHUDWithTitle(view: self.view, title: nil)
             
-            presenter?.searchWithKeyword(keyword: searchBar.text!)
-            
+            presenter?.getOfflinePhotos()
         }
-        
     }
     
-    /*
-     // MARK: - Navigation
-     
-     // In a storyboard-based application, you will often want to do a little preparation before navigation
-     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-     // Get the new view controller using segue.destinationViewController.
-     // Pass the selected object to the new view controller.
-     }
-     */
+    //MARK:UISearchBarDelegate
+    public func searchBarSearchButtonClicked(_ searchBar: UISearchBar){
+        searchBar.endEditing(true)
+        
+        isNetworkValiable = NetworkUtil.getNetworkStatus()
+        if isNetworkValiable == false {
+            
+            self.alert(message: "Please check your connection and try again")
+        }else{
+            photos = []
+            tableView.reloadData()
+            if presenter != nil {
+                progressView = self.showGlobalProgressHUDWithTitle(view: self.view, title: nil)
+                presenter?.searchWithKeyword(keyword: searchBar.text!)
+                
+            }
+        }
+    }
+    
+    // MARK: - Navigation
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        
+        if let indexPath = tableView.indexPathForSelectedRow{
+            let selectedRow = indexPath.row
+            let searchByUserViewController = segue.destination as! SearchByUserViewController
+            searchByUserViewController.ownerID = photos[selectedRow].ownerID
+        }
+    }
+    
+    
+    //MARK: SearchByKeywordPresenterViewProtocol
     
     func showSearchResult(photoArray : [Photo]){
         DispatchQueue.main.async  {
-            self.progressView?.hide(animated: true)
+            self.progressView!.hide(animated: false)
             self.photos.append(contentsOf: photoArray)
-            self.tableview.reloadData()
+            self.tableView.reloadData()
         }
     }
     
@@ -69,17 +78,11 @@ class SearchByKeywordViewController: BaseViewController ,UISearchBarDelegate ,Se
     }
     
     
-    
     //MARK: - UITableView Data Source/Delegate
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        if photos.count > 0 {
-            return self.photos.count
-            
-        }else{
-            
-            return 0
-        }
+        return self.photos.count
+        
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell{
@@ -90,11 +93,22 @@ class SearchByKeywordViewController: BaseViewController ,UISearchBarDelegate ,Se
         
         cell.titleLabel.text = photo.title
         
-        cell.photoImageView.sd_setImage(with: URL(string: photo.getPhotoThumbnailURL()))
-        
-        if indexPath.row == photos.count - 1 { // last cell
-            progressView = self.showGlobalProgressHUDWithTitle(view: self.view, title: nil)
-            presenter?.loadMorePhotos()
+        if isNetworkValiable == false {
+            cell.photoImageView.image = nil
+            
+            if photo.image != nil{
+                cell.photoImageView.image = UIImage(data: photo.image as! Data , scale:1)
+            }
+            
+        }else{
+            cell.photoImageView.sd_setShowActivityIndicatorView(true)
+            cell.photoImageView.sd_setIndicatorStyle(.gray)
+            cell.photoImageView.sd_setImage(with: URL(string: photo.getPhotoThumbnailURL()))
+            
+            if indexPath.row == photos.count - 1 { // last cell
+                progressView = self.showGlobalProgressHUDWithTitle(view: self.view, title: nil)
+                presenter?.loadMorePhotos()
+            }
         }
         return cell
     }

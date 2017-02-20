@@ -9,6 +9,11 @@
 			<key>isShown</key>
 			<false/>
 		</dict>
+		<key>AlamofireImage.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
 		<key>DZNEmptyDataSet.xcscheme</key>
 		<dict>
 			<key>isShown</key>
@@ -47,7 +52,7 @@
 	</dict>
 	<key>SuppressBuildableAutocreation</key>
 	<dict>
-		<key>2B4E24F6793392F83575B3DB01D5D8AF</key>
+		<key>0191554699A95C24617C9D11478D55C3</key>
 		<dict>
 			<key>primary</key>
 			<true/>
@@ -62,7 +67,12 @@
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>C6EF543F6E6EC85CC1969E34E90887CC</key>
+		<key>9EFE4C70245EE2857D336B8B9FA4E825</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>CA2098A455344ECA69F24BFC683E3892</key>
 		<dict>
 			<key>primary</key>
 			<true/>
@@ -72,17 +82,17 @@
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>D890E8A1675CEBDDB774C3FA40538BBC</key>
-		<dict>
-			<key>primary</key>
-			<true/>
-		</dict>
-		<key>EE3D6BCEBF04165BCD5A547A5ABBC374</key>
+		<key>E6F11BE4786B66A8608FA6CE812591E5</key>
 		<dict>
 			<key>primary</key>
 			<true/>
 		</dict>
 		<key>F5543116A1CCED0BD259EC8CF5E38CF8</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>FC2C3A95ACB4EC9BA8E0EB10B7D7D74A</key>
 		<dict>
 			<key>primary</key>
 			<true/>

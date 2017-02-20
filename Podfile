@@ -11,6 +11,7 @@ target 'FlickrPhotosSearch' do
     pod 'DZNEmptyDataSet'
     pod 'MBProgressHUD'
     pod 'Reachability'
+    pod 'AlamofireImage'
     # Pods for FlickrPhotosSearch
     
     target 'FlickrPhotosSearchTests' do
