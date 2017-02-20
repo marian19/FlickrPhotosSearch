@@ -22,7 +22,8 @@ public class Photo: NSManagedObject {
             return
         }
         
-        let managedObjectContext = appDelegate.persistentContainer.viewContext
+            let managedObjectContext = appDelegate.managedObjectContext
+        
         
         let fetch = NSFetchRequest<NSFetchRequestResult>(entityName: "Photo")
         let request = NSBatchDeleteRequest(fetchRequest: fetch)
@@ -45,13 +46,14 @@ public class Photo: NSManagedObject {
         
         let appDelegate = UIApplication.shared.delegate as? AppDelegate
         
-        let managedContext = appDelegate?.persistentContainer.viewContext
+        let managedObjectContext = appDelegate?.managedObjectContext
+
         
         let entity = NSEntityDescription.entity(forEntityName: "Photo",
-                                                in: managedContext!)!
+                                                in: managedObjectContext!)!
         
         let photo = NSManagedObject(entity: entity,
-                                    insertInto: managedContext) as! Photo
+                                    insertInto: managedObjectContext) as! Photo
         
         photo.setValue(jsonDictionary["title"].stringValue, forKey: "title")
         photo.setValue(jsonDictionary["farm"].stringValue, forKey: "farm")
@@ -70,7 +72,7 @@ public class Photo: NSManagedObject {
                 print("image downloaded: \(image)")
                 photo.setValue(UIImagePNGRepresentation(image), forKey: "image")
                 do {
-                    try managedContext?.save()
+                    try managedObjectContext?.save()
                     
                 } catch let error as NSError {
                     print("Could not save. \(error), \(error.userInfo)")
@@ -86,13 +88,14 @@ public class Photo: NSManagedObject {
         var photos  = [Photo]() // Where Locations = your NSManaged Class
         let appDelegate = UIApplication.shared.delegate as? AppDelegate
         
-        let managedContext = appDelegate?.persistentContainer.viewContext
+        let managedObjectContext = appDelegate?.managedObjectContext
+
         
         let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "Photo")
         do {
             
             try
-                photos = managedContext!.fetch(fetchRequest) as! [Photo]
+                photos = managedObjectContext!.fetch(fetchRequest) as! [Photo]
         } catch {
             // Replace this implementation with code to handle the error appropriately.
             // fatalError() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.

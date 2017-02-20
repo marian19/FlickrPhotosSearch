@@ -79,7 +79,7 @@
                                         <connections>
                                             <outlet property="photoImageView" destination="kHz-hC-JAo" id="udF-1D-rH3"/>
                                             <outlet property="titleLabel" destination="McP-Y6-h7c" id="Q06-0r-iDa"/>
-                                            <segue destination="u4g-7s-WOn" kind="show" id="S4t-M1-hB9"/>
+                                            <segue destination="u4g-7s-WOn" kind="show" identifier="userPhotos" id="S4t-M1-hB9"/>
                                         </connections>
                                     </tableViewCell>
                                 </prototypes>
@@ -102,7 +102,7 @@
                             <constraint firstItem="Qfl-oN-lBE" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" id="z9z-Ld-qtt"/>
                         </constraints>
                     </view>
-                    <navigationItem key="navigationItem" id="6Db-bf-BbY"/>
+                    <navigationItem key="navigationItem" title="Flicker photo Search App" id="6Db-bf-BbY"/>
                     <connections>
                         <outlet property="searchBar" destination="Qfl-oN-lBE" id="nxn-do-y7v"/>
                         <outlet property="tableView" destination="0Nd-ni-Wfn" id="TCW-PM-TTZ"/>
@@ -115,7 +115,7 @@
         <!--Empty Data Set Delegate-->
         <scene sceneID="mcE-rV-oj4">
             <objects>
-                <viewController id="u4g-7s-WOn" customClass="SearchByUserViewController" customModule="FlickrPhotosSearch" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController title="More Photos from this user" id="u4g-7s-WOn" customClass="SearchByUserViewController" customModule="FlickrPhotosSearch" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="0bW-Af-FO5"/>
                         <viewControllerLayoutGuide type="bottom" id="2FA-Qn-mA0"/>

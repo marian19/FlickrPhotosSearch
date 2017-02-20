@@ -83,7 +83,7 @@ class SearchByUserViewController: BaseViewController ,SearchByUserPresenterViewP
 extension SearchByUserViewController: DZNEmptyDataSetSource, DZNEmptyDataSetDelegate{
     
     func title(forEmptyDataSet scrollView: UIScrollView!) -> NSAttributedString! {
-        return NSAttributedString(string: "There is no photos")
+        return NSAttributedString(string: "NoPhotos".localized)
     }
     
     func description(forEmptyDataSet scrollView: UIScrollView!) -> NSAttributedString! {

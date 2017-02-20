@@ -39,7 +39,7 @@ class SearchByKeywordViewController: BaseViewController ,UISearchBarDelegate ,Se
         isNetworkValiable = NetworkUtil.getNetworkStatus()
         if isNetworkValiable == false {
             
-            self.alert(message: "Please check your connection and try again")
+            self.alert(message: "OfflineMessage".localized, title: "ConnectionError".localized)
         }else{
             photos = []
             tableView.reloadData()
@@ -62,6 +62,27 @@ class SearchByKeywordViewController: BaseViewController ,UISearchBarDelegate ,Se
         }
     }
     
+    override func shouldPerformSegue(withIdentifier identifier: String?, sender: Any?) -> Bool {
+        if let segueIdentifier = identifier {
+            if segueIdentifier == "userPhotos" {
+                isNetworkValiable = NetworkUtil.getNetworkStatus()
+                
+                //if network not avaliable , don't navigate to searchByUserViewController
+                if isNetworkValiable == false {
+                    DispatchQueue.main.async{
+                        
+                        self.alert(message: "OfflineMessage".localized, title: "ConnectionError".localized)
+                    }
+                    return false
+                }else{
+                    return true
+                    
+                }
+            }
+        }
+        return true
+    }
+    
     
     //MARK: SearchByKeywordPresenterViewProtocol
     
@@ -74,7 +95,10 @@ class SearchByKeywordViewController: BaseViewController ,UISearchBarDelegate ,Se
     }
     
     func showErrorMsg(msg : String){
-        self.alert(message: msg)
+        DispatchQueue.main.async  {
+            self.progressView!.hide(animated: false)
+            self.alert(message: msg)
+        }
     }
     
     
@@ -90,22 +114,23 @@ class SearchByKeywordViewController: BaseViewController ,UISearchBarDelegate ,Se
         let photo = photos[indexPath.row]
         
         let cell = tableView.dequeueReusableCell(withIdentifier: "reuseIdentifier", for: indexPath) as! PhotoTableViewCell
-        
+        cell.selectionStyle = .none
         cell.titleLabel.text = photo.title
         
-        if isNetworkValiable == false {
+        if isNetworkValiable == false { // the photos are from core date
             cell.photoImageView.image = nil
             
             if photo.image != nil{
                 cell.photoImageView.image = UIImage(data: photo.image as! Data , scale:1)
             }
             
-        }else{
+        }else{// the photos are from Flickr API
+            
             cell.photoImageView.sd_setShowActivityIndicatorView(true)
             cell.photoImageView.sd_setIndicatorStyle(.gray)
             cell.photoImageView.sd_setImage(with: URL(string: photo.getPhotoThumbnailURL()))
             
-            if indexPath.row == photos.count - 1 { // last cell
+            if indexPath.row == photos.count - 1 { // last cell -> load the next page
                 progressView = self.showGlobalProgressHUDWithTitle(view: self.view, title: nil)
                 presenter?.loadMorePhotos()
             }
@@ -124,10 +149,10 @@ class SearchByKeywordViewController: BaseViewController ,UISearchBarDelegate ,Se
 extension SearchByKeywordViewController: DZNEmptyDataSetSource, DZNEmptyDataSetDelegate{
     
     func title(forEmptyDataSet scrollView: UIScrollView!) -> NSAttributedString! {
-        return NSAttributedString(string: "There is no photos")
+        return NSAttributedString(string: "NoPhotos".localized)
     }
     
     func description(forEmptyDataSet scrollView: UIScrollView!) -> NSAttributedString! {
-        return NSAttributedString(string: "You can start searching for photos.")
+        return NSAttributedString(string: "SearchingForPhotos".localized)
     }
 }

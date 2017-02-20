@@ -12,7 +12,6 @@ protocol SearchByKeywordViewPresenterProtocol : class{
     
     func searchWithKeyword(keyword : String)
     func getOfflinePhotos()
-    init(view: SearchByKeywordPresenterViewProtocol)
     func loadMorePhotos()
     
 }

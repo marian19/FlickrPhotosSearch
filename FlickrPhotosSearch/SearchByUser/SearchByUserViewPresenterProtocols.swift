@@ -10,7 +10,6 @@ import UIKit
 
 protocol SearchByUserViewPresenterProtocol : class{
     func searchWithUser(ownerID : String)
-    init(view: SearchByUserPresenterViewProtocol)
     func loadMorePhotos()
 
 }

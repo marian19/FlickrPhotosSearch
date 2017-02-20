@@ -1,0 +1,12 @@
+/* 
+  File.strings
+  FlickrPhotosSearch
+
+  Created by Marian on 2/20/17.
+  Copyright © 2017 Marian. All rights reserved.
+*/
+
+"NoPhotos" = "No Photos to display";
+"SearchingForPhotos" = "You can start searching for photos.";
+"ConnectionError" = "Connection error";
+"OfflineMessage" = "The internet connection appears to be offline";
