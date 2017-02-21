@@ -10,3 +10,4 @@
 "SearchingForPhotos" = "You can start searching for photos.";
 "ConnectionError" = "Connection error";
 "OfflineMessage" = "The internet connection appears to be offline";
+"Loading" = "Loading";
