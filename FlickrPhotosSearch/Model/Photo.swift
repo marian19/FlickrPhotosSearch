@@ -63,13 +63,9 @@ public class Photo: NSManagedObject {
         photo.setValue(jsonDictionary["server"].stringValue, forKey: "server")
         
         Alamofire.request(photo.getPhotoThumbnailURL()).responseImage { response in
-            debugPrint(response)
             
-            
-            debugPrint(response.result)
-            
+                        
             if let image = response.result.value {
-                print("image downloaded: \(image)")
                 photo.setValue(UIImagePNGRepresentation(image), forKey: "image")
                 do {
                     try managedObjectContext?.save()

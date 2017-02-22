@@ -32,7 +32,6 @@ class SearchClient: NSObject {
             var photos:[Photo] = []
             
             for item in json["photos"]["photo"].arrayValue{
-                print(item["owner"].stringValue)
                 let photo = Photo.createPhotoFrom(jsonDictionary: item)
                 photos.append(photo)
                 
@@ -65,7 +64,6 @@ class SearchClient: NSObject {
             var photos:[Photo] = []
             
             for item in json["photos"]["photo"].arrayValue{
-                print(item["owner"].stringValue)
                 let photo = Photo.createPhotoFrom(jsonDictionary: item)
                 photos.append(photo)
                 

@@ -47,7 +47,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         self.saveContext()
     }
 
-    // MARK: - Core Data stack
 
     // MARK: - Core Data stack
     

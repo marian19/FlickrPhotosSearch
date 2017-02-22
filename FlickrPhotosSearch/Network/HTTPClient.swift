@@ -25,14 +25,12 @@ class HTTPClient: NSObject {
             switch(response.result) {
             case .success(_):
                 if let data = response.result.value{
-                    print(response.result.value!)
                     success(data)
                     
                 }
                 break
                 
             case .failure(_):
-                print(response.result.error!)
                 failure(response.result.error!)
                 
                 break

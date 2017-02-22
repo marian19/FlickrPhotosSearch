@@ -1,5 +1,5 @@
 //
-//  SearchByKeywordPresenterImplementation.swift
+//  SearchByUserPresenter.swift
 //  FlickrPhotosSearch
 //
 //  Created by Marian on 2/16/17.
@@ -12,7 +12,6 @@ class SearchByUserPresenter: SearchByUserViewPresenterProtocol, SearchByUserServ
     
     weak var SearchByUserView : SearchByUserPresenterViewProtocol?
     var service : SearchByUserPresenterServiceProtocol?
-    
     var pageIndex = 1
     var ownerID : String?
     required init(view: SearchByUserPresenterViewProtocol) {

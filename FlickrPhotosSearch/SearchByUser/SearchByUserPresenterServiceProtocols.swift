@@ -1,5 +1,5 @@
 //
-//  SearchByKeywordPresenterServiceProtocol.swift
+//  SearchByUserPresenterServiceProtocols.swift
 //  FlickrPhotosSearch
 //
 //  Created by Marian on 2/16/17.

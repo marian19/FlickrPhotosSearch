@@ -31,7 +31,7 @@ class SearchByUserViewController: BaseViewController ,SearchByUserPresenterViewP
         // Do any additional setup after loading the view.
     }
     
-    //MARK: SearchByKeywordPresenterViewProtocol
+    //MARK: SearchByUserPresenterViewProtocol
     
     func showSearchResult(photoArray : [Photo]){
         DispatchQueue.main.async  {

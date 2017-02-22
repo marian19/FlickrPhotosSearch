@@ -1,5 +1,5 @@
 //
-//  SearchByKeywordService.swift
+//  SearchByUserService.swift
 //  FlickrPhotosSearch
 //
 //  Created by Marian on 2/16/17.
@@ -13,20 +13,20 @@ class SearchByUserService: SearchByUserPresenterServiceProtocol {
     
     weak var searchByUserPresenter : SearchByUserServicePresenterProtocol?
     
-   
+    
     
     func searchByUser(ownerID : String , pageNumber : Int){
         let searchClient = SearchClient()
         
-            searchClient.searchPhotosByOwnerId(ownerID: ownerID, pageNumber: pageNumber ,success: { [weak self] photoArray in
+        searchClient.searchPhotosByOwnerId(ownerID: ownerID, pageNumber: pageNumber ,success: { [weak self] photoArray in
+            
+            self?.searchByUserPresenter?.setSearchResults(photoArray: photoArray)
+            
+            },failure: { [weak self]  error in
                 
-                self?.searchByUserPresenter?.setSearchResults(photoArray: photoArray)
+                self?.searchByUserPresenter?.handelError(error: error)
                 
-                },failure: { [weak self]  error in
-                    
-                    self?.searchByUserPresenter?.handelError(error: error)
-                    
-            })
+        })
         
     }
     
@@ -35,5 +35,5 @@ class SearchByUserService: SearchByUserPresenterServiceProtocol {
     }
     
     
-   
+    
 }

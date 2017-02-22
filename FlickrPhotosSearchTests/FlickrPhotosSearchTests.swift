@@ -36,7 +36,6 @@ class FlickrPhotosSearchTests: XCTestCase {
         XCTAssertNotNil((viewController.tableView ), "tableView not connected in storyboard")
         XCTAssertNotNil((viewController.searchBar), "seaarchBar not connected in storyboard")
         
-        
     }
     
     func testProperties() {
@@ -55,7 +54,6 @@ class FlickrPhotosSearchTests: XCTestCase {
         }
         XCTAssertTrue(presenter.getOfflinePhotosGotCalled , "getOfflinePhotos should have been called")
         
-        
     }
     
     func testSearchWithKeywordGotCalled() {
@@ -65,15 +63,15 @@ class FlickrPhotosSearchTests: XCTestCase {
         XCTAssertTrue(presenter.searchWithKeywordGotCalled , "searchWithKeyword should have been called")
     }
     
-    class MockPresenter: NSObject, SearchByKeywordViewPresenterProtocol {
-        var getOfflinePhotosGotCalled = false
-        var searchWithKeywordGotCalled = false
-        
-        func searchWithKeyword(keyword : String){searchWithKeywordGotCalled = true}
-        func getOfflinePhotos(){ getOfflinePhotosGotCalled = true}
-        func loadMorePhotos(){}
-        
-    }
     
+}
+
+class MockPresenter: NSObject, SearchByKeywordViewPresenterProtocol {
+    var getOfflinePhotosGotCalled = false
+    var searchWithKeywordGotCalled = false
+    
+    func searchWithKeyword(keyword : String){searchWithKeywordGotCalled = true}
+    func getOfflinePhotos(){ getOfflinePhotosGotCalled = true}
+    func loadMorePhotos(){}
     
 }

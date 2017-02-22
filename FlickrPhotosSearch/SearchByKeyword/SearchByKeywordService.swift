@@ -21,15 +21,15 @@ class SearchByKeywordService: SearchByKeywordPresenterServiceProtocol {
     func searchByKeyword(keyword : String , pageNumber : Int){
         let searchClient = SearchClient()
         
-            searchClient.searchPhotosByKeyword(keyword: keyword, pageNumber: pageNumber ,success: { [weak self] photoArray in
+        searchClient.searchPhotosByKeyword(keyword: keyword, pageNumber: pageNumber ,success: { [weak self] photoArray in
+            
+            self?.searchByKeywordPresenter?.setSearchResults(photoArray: photoArray)
+            
+            },failure: { [weak self]  error in
                 
-                self?.searchByKeywordPresenter?.setSearchResults(photoArray: photoArray)
+                self?.searchByKeywordPresenter?.handelError(error: error)
                 
-                },failure: { [weak self]  error in
-                    
-                    self?.searchByKeywordPresenter?.handelError(error: error)
-                    
-            })
+        })
         
     }
     
@@ -38,5 +38,5 @@ class SearchByKeywordService: SearchByKeywordPresenterServiceProtocol {
     }
     
     
-   
+    
 }

@@ -1,5 +1,5 @@
 //
-//  SearchByKeywordServiceTests.swift
+//  SearchClientTests.swift
 //  FlickrPhotosSearch
 //
 //  Created by Marian on 2/20/17.
@@ -25,19 +25,16 @@ class SearchClientTests: XCTestCase {
     func testServiceCallBack() {
         let searchClient = SearchClient()
         
-        // This is an example of a functional test case.
-        // Use XCTAssert and related functions to verify your tests produce the correct results.
-        // 1. Define an expectation
+        
         let expectation = self.expectation(description: "SearchClient search Photos By Keyword and runs the callback closure")
         searchClient.searchPhotosByKeyword(keyword: "sky", pageNumber: 1, success: { photos in
             XCTAssertNotNil(photos)
             expectation.fulfill()
-
+            
         }, failure: { error in
             
         })
         
-        // 3. Make the test runner wait for the expectation(s) to fulfill
         waitForExpectations(timeout: 1) { error in
             if let error = error {
                 XCTFail("waitForExpectationsWithTimeout errored: \(error)")
@@ -45,9 +42,6 @@ class SearchClientTests: XCTestCase {
         }
         
     }
-    
-    
-    
     
 }
 
