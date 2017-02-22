@@ -1,5 +1,5 @@
 //
-//  Photo+CoreDataClass.swift
+//  Photo.swift
 //
 //
 //  Created by Marian on 2/18/17.
@@ -81,7 +81,7 @@ public class Photo: NSManagedObject {
     
     static func getAllPhotos() -> [Photo]{
         
-        var photos  = [Photo]() // Where Locations = your NSManaged Class
+        var photos  = [Photo]()
         let appDelegate = UIApplication.shared.delegate as? AppDelegate
         
         let managedObjectContext = appDelegate?.managedObjectContext
@@ -93,10 +93,8 @@ public class Photo: NSManagedObject {
             try
                 photos = managedObjectContext!.fetch(fetchRequest) as! [Photo]
         } catch {
-            // Replace this implementation with code to handle the error appropriately.
-            // fatalError() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
             let nserror = error as NSError
-            fatalError("Unresolved error \(nserror), \(nserror.userInfo)")
+            print("Unresolved error \(nserror), \(nserror.userInfo)")
         }
        
         return photos
