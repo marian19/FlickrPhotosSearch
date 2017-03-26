@@ -21,6 +21,7 @@ class SearchByUserPresenter: SearchByUserViewPresenterProtocol, SearchByUserServ
     
     func searchWithUser(ownerID : String){
         
+        self.SearchByUserView?.showProgressBar()
         self.ownerID = ownerID
         service = SearchByUserService(presenter: self)
         service?.searchByUser(ownerID: ownerID, pageNumber: pageIndex)
@@ -28,6 +29,8 @@ class SearchByUserPresenter: SearchByUserViewPresenterProtocol, SearchByUserServ
     }
     
     func loadMorePhotos(){
+        self.SearchByUserView?.showProgressBar()
+        
         if service == nil {
             service = SearchByUserService(presenter: self)
             
@@ -37,11 +40,15 @@ class SearchByUserPresenter: SearchByUserViewPresenterProtocol, SearchByUserServ
     }
     
     func setSearchResults(photoArray : [Photo]){
+        
+        self.SearchByUserView?.hideProgressBar()
         SearchByUserView?.showSearchResult(photoArray: photoArray)
         
     }
     
     func handelError(error : Error){
+        
+        self.SearchByUserView?.hideProgressBar()
         SearchByUserView?.showErrorMsg(msg: error.localizedDescription)
     }
     

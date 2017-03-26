@@ -10,26 +10,36 @@ import UIKit
 
 class SearchByKeywordPresenter: SearchByKeywordViewPresenterProtocol, SearchByKeywordServicePresenterProtocol{
     
-    weak var SearchByKeywordView : SearchByKeywordPresenterViewProtocol?
+    weak var searchByKeywordView : SearchByKeywordPresenterViewProtocol?
     var service : SearchByKeywordPresenterServiceProtocol?
     
     var pageIndex = 1
     var keyword : String?
     required init(view: SearchByKeywordPresenterViewProtocol) {
-        self.SearchByKeywordView = view
+        self.searchByKeywordView = view
+        
         
     }
     
-    func searchWithKeyword(keyword : String){
-        Photo.deleteAllPhotos()
-        
+    func searchingWithKeyword(keyword : String){
         self.keyword = keyword
-        service = SearchByKeywordService(presenter: self)
-        service?.searchByKeyword(keyword: keyword, pageNumber: pageIndex)
-        pageIndex = pageIndex + 1
+        self.searchByKeywordView?.showProgressBar()
+        let isNetworkValiable = NetworkUtil.getNetworkStatus()
+        
+        if isNetworkValiable == false {
+            searchByKeywordView?.hideProgressBar()
+            
+            searchByKeywordView?.showErrorMsg(msg: "OfflineMessage".localized )
+            
+        }else{
+            
+            getingOnlinePhotos()
+        }
     }
     
-    func loadMorePhotos(){
+    func loadingMorePhotos(){
+        self.searchByKeywordView?.showProgressBar()
+        
         if service == nil {
             service = SearchByKeywordService(presenter: self)
             
@@ -39,21 +49,35 @@ class SearchByKeywordPresenter: SearchByKeywordViewPresenterProtocol, SearchByKe
     }
     
     func setSearchResults(photoArray : [Photo]){
-        SearchByKeywordView?.showSearchResult(photoArray: photoArray)
+        searchByKeywordView?.hideProgressBar()
+        searchByKeywordView?.showSearchResult(photoArray: photoArray)
         
     }
     
     func handelError(error : Error){
-        SearchByKeywordView?.showErrorMsg(msg: error.localizedDescription)
+        searchByKeywordView?.hideProgressBar()
+        
+        searchByKeywordView?.showErrorMsg(msg: error.localizedDescription)
     }
     
-    func getOfflinePhotos(){
+    func getingOnlinePhotos(){
+        Photo.deleteAllPhotos()
+        
+        service = SearchByKeywordService(presenter: self)
+        service?.searchByKeyword(keyword: keyword!, pageNumber: pageIndex)
+        pageIndex = pageIndex + 1
+    }
+    
+    
+    
+    func getingCachedPhotos(){
+        self.searchByKeywordView?.showProgressBar()
+        
         if service == nil {
             service = SearchByKeywordService(presenter: self)
             
         }
         service?.getOfflinePhotos()
     }
-    
     
 }

@@ -10,9 +10,9 @@ import UIKit
 
 protocol SearchByKeywordViewPresenterProtocol : class{
     
-    func searchWithKeyword(keyword : String)
-    func getOfflinePhotos()
-    func loadMorePhotos()
+    func searchingWithKeyword(keyword : String)
+    func loadingMorePhotos()
+    func getingCachedPhotos()
     
 }
 
@@ -20,5 +20,7 @@ protocol SearchByKeywordPresenterViewProtocol : class{
     
     func showSearchResult(photoArray : [Photo])
     func showErrorMsg(msg : String)
+    func showProgressBar()
+    func hideProgressBar()
     
 }

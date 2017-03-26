@@ -20,11 +20,10 @@ class SearchByUserViewController: BaseViewController ,SearchByUserPresenterViewP
     var photos : [Photo] = []
     var progressView : MBProgressHUD?
     var ownerID : String?
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        presenter  = SearchByUserPresenter(view: self)
         if presenter != nil {
-            progressView = self.showGlobalProgressHUDWithTitle(view: self.view, title: nil)
             presenter?.searchWithUser(ownerID: ownerID!)
             
         }
@@ -35,7 +34,7 @@ class SearchByUserViewController: BaseViewController ,SearchByUserPresenterViewP
     
     func showSearchResult(photoArray : [Photo]){
         DispatchQueue.main.async  {
-            self.progressView!.hide(animated: false)
+            //            self.progressView!.hide(animated: false)
             self.photos.append(contentsOf: photoArray)
             self.tableView.reloadData()
         }
@@ -45,7 +44,15 @@ class SearchByUserViewController: BaseViewController ,SearchByUserPresenterViewP
         self.alert(message: msg)
     }
     
+    func showProgressBar(){
+        progressView = self.showGlobalProgressHUDWithTitle(view: self.view, title: nil)
+        
+    }
     
+    func hideProgressBar(){
+        self.progressView!.hide(animated: false)
+        
+    }
     //MARK: - UITableView Data Source/Delegate
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -65,7 +72,6 @@ class SearchByUserViewController: BaseViewController ,SearchByUserPresenterViewP
         cell.photoImageView.sd_setImage(with: URL(string: photo.getPhotoThumbnailURL()))
         
         if indexPath.row == photos.count - 1 { // last cell
-            progressView = self.showGlobalProgressHUDWithTitle(view: self.view, title: nil)
             presenter?.loadMorePhotos()
         }
         

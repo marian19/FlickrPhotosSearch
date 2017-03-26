@@ -19,35 +19,21 @@ class SearchByKeywordViewController: BaseViewController ,UISearchBarDelegate ,Se
     var presenter : SearchByKeywordViewPresenterProtocol?
     var photos : [Photo] = []
     var progressView : MBProgressHUD?
-    var isNetworkValiable = false
+    //    var isNetworkValiable = false
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        presenter  = SearchByKeywordPresenter(view: self)
-        isNetworkValiable = NetworkUtil.getNetworkStatus()
-        if isNetworkValiable == false {
-            progressView = self.showGlobalProgressHUDWithTitle(view: self.view, title: nil)
-            
-            presenter?.getOfflinePhotos()
-        }
+        presenter?.getingCachedPhotos()
     }
     
     //MARK:UISearchBarDelegate
     public func searchBarSearchButtonClicked(_ searchBar: UISearchBar){
         searchBar.endEditing(true)
-        
-        isNetworkValiable = NetworkUtil.getNetworkStatus()
-        if isNetworkValiable == false {
+        photos = []
+        tableView.reloadData()
+        if presenter != nil {
+            presenter?.searchingWithKeyword(keyword: searchBar.text!)
             
-            self.alert(message: "OfflineMessage".localized, title: "ConnectionError".localized)
-        }else{
-            photos = []
-            tableView.reloadData()
-            if presenter != nil {
-                progressView = self.showGlobalProgressHUDWithTitle(view: self.view, title: nil)
-                presenter?.searchWithKeyword(keyword: searchBar.text!)
-                
-            }
         }
     }
     
@@ -58,14 +44,16 @@ class SearchByKeywordViewController: BaseViewController ,UISearchBarDelegate ,Se
         if let indexPath = tableView.indexPathForSelectedRow{
             let selectedRow = indexPath.row
             let searchByUserViewController = segue.destination as! SearchByUserViewController
+            let presenter  = SearchByUserPresenter(view: searchByUserViewController)
             searchByUserViewController.ownerID = photos[selectedRow].ownerID
+            searchByUserViewController.presenter = presenter
         }
     }
     
     override func shouldPerformSegue(withIdentifier identifier: String?, sender: Any?) -> Bool {
         if let segueIdentifier = identifier {
             if segueIdentifier == "userPhotos" {
-                isNetworkValiable = NetworkUtil.getNetworkStatus()
+                let isNetworkValiable = NetworkUtil.getNetworkStatus()
                 
                 //if network not avaliable , don't navigate to searchByUserViewController
                 if isNetworkValiable == false {
@@ -84,11 +72,12 @@ class SearchByKeywordViewController: BaseViewController ,UISearchBarDelegate ,Se
     }
     
     
+    
     //MARK: SearchByKeywordPresenterViewProtocol
     
     func showSearchResult(photoArray : [Photo]){
         DispatchQueue.main.async  {
-            self.progressView!.hide(animated: false)
+            
             self.photos.append(contentsOf: photoArray)
             self.tableView.reloadData()
         }
@@ -96,11 +85,19 @@ class SearchByKeywordViewController: BaseViewController ,UISearchBarDelegate ,Se
     
     func showErrorMsg(msg : String){
         DispatchQueue.main.async  {
-            self.progressView!.hide(animated: false)
             self.alert(message: msg)
         }
     }
     
+    func showProgressBar(){
+        progressView = self.showGlobalProgressHUDWithTitle(view: self.view, title: nil)
+        
+    }
+    
+    func hideProgressBar(){
+        self.progressView!.hide(animated: false)
+        
+    }
     
     //MARK: - UITableView Data Source/Delegate
     
@@ -117,22 +114,23 @@ class SearchByKeywordViewController: BaseViewController ,UISearchBarDelegate ,Se
         cell.selectionStyle = .none
         cell.titleLabel.text = photo.title
         
-        if isNetworkValiable == false { // the photos are from core date
-            cell.photoImageView.image = nil
+        
+        
+        if photo.image != nil{
+            cell.photoImageView.image = UIImage(data: photo.image as! Data , scale:1)
             
-            if photo.image != nil{
-                cell.photoImageView.image = UIImage(data: photo.image as! Data , scale:1)
-            }
+        }else{
             
-        }else{// the photos are from Flickr API
-            
-            cell.photoImageView.sd_setShowActivityIndicatorView(true)
-            cell.photoImageView.sd_setIndicatorStyle(.gray)
-            cell.photoImageView.sd_setImage(with: URL(string: photo.getPhotoThumbnailURL()))
-            
-            if indexPath.row == photos.count - 1 { // last cell -> load the next page
-                progressView = self.showGlobalProgressHUDWithTitle(view: self.view, title: nil)
-                presenter?.loadMorePhotos()
+            let isNetworkValiable = NetworkUtil.getNetworkStatus()
+            if isNetworkValiable == true { // the photos are from core date
+                
+                cell.photoImageView.sd_setShowActivityIndicatorView(true)
+                cell.photoImageView.sd_setIndicatorStyle(.gray)
+                cell.photoImageView.sd_setImage(with: URL(string: photo.getPhotoThumbnailURL()))
+                
+                if indexPath.row == photos.count - 1 { // last cell -> load the next page
+                    presenter?.loadingMorePhotos()
+                }
             }
         }
         return cell
